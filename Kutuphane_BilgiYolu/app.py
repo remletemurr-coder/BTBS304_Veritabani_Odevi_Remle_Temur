@@ -4,7 +4,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    # HTML şablonuyla uğraşmadan doğrudan Python içinden tabloyu basıyoruz!
+    # HTML şablonuyla uğraşmadan doğrudan Python içinden tabloyu basıyoruz! (index.html)
     html_icerik = """
     <!DOCTYPE html>
     <html lang="tr">

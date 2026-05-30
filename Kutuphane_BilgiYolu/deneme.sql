@@ -1,3 +1,6 @@
+-- ========================================================
+-- 1. TABLOLARIN OLUŞTURULMASI
+-- ========================================================
 CREATE TABLE Kategoriler (
     KategoriID INT AUTO_INCREMENT PRIMARY KEY,
     KategoriAdi VARCHAR(100) NOT NULL UNIQUE
@@ -30,34 +33,75 @@ CREATE TABLE Odunc (
     FOREIGN KEY (MateryalID) REFERENCES Materyaller(MateryalID)
 );
 
--- PROSEDÜR: Üye Ekleme [cite: 531]
+-- ========================================================
+-- 2. SAKLI YORDAMLAR (STORED PROCEDURES)
+-- ========================================================
+
+-- A. ÜYE EKLEME PROCEDURI
 CREATE PROCEDURE sp_UyeEkle(p_tc CHAR(11), p_ad VARCHAR(50), p_soy VARCHAR(50), p_tip VARCHAR(20))
 BEGIN
     INSERT INTO Uyeler(TC_No, Ad, Soyad, UyeTipi) VALUES (p_tc, p_ad, p_soy, p_tip);
 END;
 
--- PROSEDÜR: Üye Listeleme [cite: 534]
+-- B. ÜYE LİSTELEME PROCEDURI
 CREATE PROCEDURE sp_UyeListele()
 BEGIN
     SELECT * FROM Uyeler;
 END;
 
--- TETİKLEYİCİ: Stok Azaltma [cite: 539, 585]
+-- C. ÜYE GÜNCELLEME PROCEDURI (Hocanın istediği güncelleme maddesi için)
+CREATE PROCEDURE sp_UyeGuncelle(p_uye_id INT, p_yeni_tip VARCHAR(20))
+BEGIN
+    UPDATE Uyeler SET UyeTipi = p_yeni_tip WHERE UyeID = p_uye_id;
+END;
+
+-- D. MATERYAL SİLME PROCEDURI (Hocanın istediği silme maddesi için)
+CREATE PROCEDURE sp_MateryalSil(p_materyal_id INT)
+BEGIN
+    DELETE FROM Materyaller WHERE MateryalID = p_materyal_id;
+END;
+
+-- ========================================================
+-- 3. SAKLI FONKSİYONLAR (FUNCTIONS)
+-- ========================================================
+
+-- Gecikilen gün sayısına göre günlük 5.50 TL'den borç hesaplayan fonksiyon
+CREATE FUNCTION fn_CezaHesapla(p_gun INT)
+RETURNS DECIMAL(10,2) DETERMINISTIC
+BEGIN
+    RETURN p_gun * 5.50;
+END;
+
+-- ========================================================
+-- 4. TETİKLEYİCİLER (TRIGGERS)
+-- ========================================================
+
+-- Ödünç verildiğinde stok düşüren tetikleyici
 CREATE TRIGGER tg_Stok_Azalt 
 AFTER INSERT ON Odunc 
 FOR EACH ROW 
 UPDATE Materyaller SET StokAdedi = StokAdedi - 1 WHERE MateryalID = NEW.MateryalID;
 
--- TEST İŞLEMLERİ
+
+-- ========================================================
+-- 5. CANLI TEST VE SİMÜLASYON İŞLEMLERİ
+-- ========================================================
+
+-- Temel Verilerin Eklenmesi
 INSERT INTO Kategoriler (KategoriAdi) VALUES ('Yazılım');
 INSERT INTO Materyaller (ISBN_ISSN, Baslik, StokAdedi, KategoriID) VALUES ('111', 'Python Projesi', 5, 1);
 
--- Prosedürü Çalıştır
+-- 1. Prosedür Testi: Üye Ekleme ve Listeleme
 CALL sp_UyeEkle('12345678901', 'Remle', 'Temur', 'Öğrenci');
 CALL sp_UyeListele();
 
--- Ödünç Ver (Trigger Testi)
-INSERT INTO Odunc (UyeID, MateryalID, AlisTarihi) VALUES (1, 1, '2026-05-09');
+-- 2. Prosedür Testi: Üye Güncelleme (Öğrenciyi Akademisyen yapıyoruz)
+CALL sp_UyeGuncelle(1, 'Akademisyen');
+SELECT * FROM Uyeler; -- Güncelleme kanıtı için
 
--- Sonuç (Stok 4'e düşmeli)
-SELECT Baslik, StokAdedi FROM Materyaller;
+-- 3. Trigger Testi: Ödünç Verildiğinde Stoğun 5'ten 4'e Düşmesi
+INSERT INTO Odunc (UyeID, MateryalID, AlisTarihi) VALUES (1, 1, '2026-05-09');
+SELECT Baslik, StokAdedi FROM Materyaller; -- Stoğun düştüğünün kanıtı
+
+-- 4. Fonksiyon Testi: 10 gün geciken bir kitabın cezasını hesaplama (55.00 TL çıkmalı)
+SELECT fn_CezaHesapla(10) AS Hesaplanan_Gecikme_Cezasi;
