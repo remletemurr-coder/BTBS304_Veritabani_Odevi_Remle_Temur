@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_parser # Eğer url_parser hata verirse direkt kaldırabilirsin
+from flask import Flask, render_template, request, redirect 
 from flask import url_for 
 from logic import BusinessLayer
 
