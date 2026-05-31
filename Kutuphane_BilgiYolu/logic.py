@@ -5,5 +5,5 @@ class BusinessLayer:
         self.db_layer = DatabaseLayer()
 
     def uyeleri_listele(self):
-        # İş kuralları burada uygulanır
+        # İş kurallarından geçerek veriyi Presentation'a aktarır
         return self.db_layer.tum_uyeleri_getir()
