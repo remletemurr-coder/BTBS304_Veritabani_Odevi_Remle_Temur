@@ -7,40 +7,197 @@ def index():
     # HTML şablonuyla uğraşmadan doğrudan Python içinden tabloyu basıyoruz! (index.html)
     html_icerik = """
     <!DOCTYPE html>
-    <html lang="tr">
-    <head>
-        <meta charset="UTF-8">
-        <title>BilgiYolu Kütüphane</title>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    </head>
-    <body class="container mt-5 bg-light">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-white">
-                <h2 class="mb-0 h4">BilgiYolu Akıllı Kütüphane - Üye Listesi (Web Arayüzü)</h2>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BilgiYolu Kütüphane - Yönetim Paneli</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --sidebar-bg: #1e293b; /* Modern Kurumsal Antrasit/Lacivert */
+            --sidebar-hover: #334155;
+            --accent-color: #38bdf8; /* BilgiYolu Parlak Mavi */
+            --body-bg: #f8fafc;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Sabit Yan Menü (Sidebar) */
+        .sidebar {
+            min-width: 260px;
+            max-width: 260px;
+            background: linear-gradient(180deg, var(--sidebar-bg) 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: #fff;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .sidebar-header h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent-color);
+        }
+
+        .nav-link-custom {
+            padding: 14px 25px;
+            display: flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link-custom:hover, .nav-link-custom.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.05);
+            border-left-color: var(--accent-color);
+            padding-left: 30px;
+        }
+
+        .nav-link-custom i {
+            margin-right: 15px;
+            font-size: 1.1rem;
+            width: 25px;
+            text-align: center;
+        }
+
+        /* Sağ İçerik Alanı */
+        .main-content {
+            padding: 40px;
+            width: 100%;
+        }
+
+        .content-card {
+            background: #ffffff;
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02);
+            overflow: hidden;
+        }
+
+        .card-header-custom {
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 25px 30px;
+        }
+
+        /* Modern Tablo Tasarımı */
+        .table-custom {
+            margin-bottom: 0;
+        }
+
+        .table-custom thead th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            padding: 16px 24px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .table-custom tbody td {
+            padding: 16px 24px;
+            vertical-align: middle;
+            color: #334155;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .table-custom tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Üye Tipi Rozeti */
+        .badge-student {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body class="d-flex">
+
+    <div class="sidebar d-flex flex-column">
+        <div class="sidebar-header">
+            <h3 class="mb-0"><i class="fa-solid fa-book-open-reader me-2"></i>BİLGİYOLU</h3>
+        </div>
+        
+        <nav class="mt-4 flex-grow-1">
+            <a href="#" class="nav-link-custom active">
+                <i class="fa-solid fa-users"></i> Üye Listesi
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-book"></i> Kitap Stoku
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-clock-history"></i> Ödünç İşlemleri
+            </a>
+            <a href="#" class="nav-link-custom">
+                <i class="fa-solid fa-triangle-exclamation"></i> Ceza Yönetimi
+            </a>
+        </nav>
+        
+        <div class="p-3 text-center border-top border-secondary border-opacity-10">
+            <small class="text-muted" style="font-size: 0.75rem;">Kütüphane Otomasyonu v2.0</small>
+        </div>
+    </div>
+
+    <div class="main-content flex-grow-1">
+        <div class="card content-card">
+            <div class="card-header-custom d-flex justify-content-between align-items-center">
+                <h4 class="mb-0 text-dark fw-bold" style="font-size: 1.25rem;">
+                    <i class="fa-solid fa-address-book text-primary me-2"></i> Kütüphane Üye Listesi (Web Arayüzü)
+                </h4>
+                <button class="btn btn-sm btn-primary px-3 py-2" style="border-radius: 6px;">
+                    <i class="fa-solid fa-user-plus me-2"></i> Yeni Üye Ekle
+                </button>
             </div>
-            <div class="card-body">
-                <table class="table table-striped table-bordered table-hover mb-0">
-                    <thead class="table-secondary">
-                        <tr>
-                            <th>Üye ID</th>
-                            <th>Ad</th>
-                            <th>Soyad</th>
-                            <th>Üye Tipi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>Remle</td>
-                            <td>Temur</td>
-                            <td>Öğrenci</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-custom">
+                        <thead>
+                            <tr>
+                                <th>Üye ID</th>
+                                <th>Ad</th>
+                                <th>Soyad</th>
+                                <th>Üye Tipi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="fw-bold text-secondary">1</td>
+                                <td class="fw-bold">Remle</td>
+                                <td class="fw-bold">Temur</td>
+                                <td><span class="badge badge-student">Öğrenci</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </body>
-    </html>
+    </div>
+
+</body>
+</html>
     """
     return html_icerik
 

@@ -39,50 +39,34 @@ CREATE TABLE Odunc (
 
 -- A. ÜYE EKLEME PROCEDURI
 CREATE PROCEDURE sp_UyeEkle(p_tc CHAR(11), p_ad VARCHAR(50), p_soy VARCHAR(50), p_tip VARCHAR(20))
-BEGIN
-    INSERT INTO Uyeler(TC_No, Ad, Soyad, UyeTipi) VALUES (p_tc, p_ad, p_soy, p_tip);
-END;
+INSERT INTO Uyeler(TC_No, Ad, Soyad, UyeTipi) VALUES (p_tc, p_ad, p_soy, p_tip);
 
 -- B. ÜYE LİSTELEME PROCEDURI
 CREATE PROCEDURE sp_UyeListele()
-BEGIN
-    SELECT * FROM Uyeler;
-END;
+SELECT * FROM Uyeler;
 
--- C. ÜYE GÜNCELLEME PROCEDURI (Hocanın istediği güncelleme maddesi için)
+-- C. ÜYE GÜNCELLEME PROCEDURI
 CREATE PROCEDURE sp_UyeGuncelle(p_uye_id INT, p_yeni_tip VARCHAR(20))
-BEGIN
-    UPDATE Uyeler SET UyeTipi = p_yeni_tip WHERE UyeID = p_uye_id;
-END;
+UPDATE Uyeler SET UyeTipi = p_yeni_tip WHERE UyeID = p_uye_id;
 
--- D. MATERYAL SİLME PROCEDURI (Hocanın istediği silme maddesi için)
+-- D. MATERYAL SİLME PROCEDURI
 CREATE PROCEDURE sp_MateryalSil(p_materyal_id INT)
-BEGIN
-    DELETE FROM Materyaller WHERE MateryalID = p_materyal_id;
-END;
+DELETE FROM Materyaller WHERE MateryalID = p_materyal_id;
 
 -- ========================================================
 -- 3. SAKLI FONKSİYONLAR (FUNCTIONS)
 -- ========================================================
-
--- Gecikilen gün sayısına göre günlük 5.50 TL'den borç hesaplayan fonksiyon
 CREATE FUNCTION fn_CezaHesapla(p_gun INT)
 RETURNS DECIMAL(10,2) DETERMINISTIC
-BEGIN
-    RETURN p_gun * 5.50;
-END;
+RETURN p_gun * 5.50;
 
 -- ========================================================
 -- 4. TETİKLEYİCİLER (TRIGGERS)
 -- ========================================================
-
--- Ödünç verildiğinde stok düşüren tetikleyici
 CREATE TRIGGER tg_Stok_Azalt 
 AFTER INSERT ON Odunc 
 FOR EACH ROW 
 UPDATE Materyaller SET StokAdedi = StokAdedi - 1 WHERE MateryalID = NEW.MateryalID;
-
-
 -- ========================================================
 -- 5. CANLI TEST VE SİMÜLASYON İŞLEMLERİ
 -- ========================================================
@@ -97,11 +81,11 @@ CALL sp_UyeListele();
 
 -- 2. Prosedür Testi: Üye Güncelleme (Öğrenciyi Akademisyen yapıyoruz)
 CALL sp_UyeGuncelle(1, 'Akademisyen');
-SELECT * FROM Uyeler; -- Güncelleme kanıtı için
+SELECT * FROM Uyeler;
 
 -- 3. Trigger Testi: Ödünç Verildiğinde Stoğun 5'ten 4'e Düşmesi
 INSERT INTO Odunc (UyeID, MateryalID, AlisTarihi) VALUES (1, 1, '2026-05-09');
-SELECT Baslik, StokAdedi FROM Materyaller; -- Stoğun düştüğünün kanıtı
+SELECT Baslik, StokAdedi FROM Materyaller;
 
--- 4. Fonksiyon Testi: 10 gün geciken bir kitabın cezasını hesaplama (55.00 TL çıkmalı)
+-- 4. Fonksiyon Testi: Gecikme Cezası Hesaplama (10 gün için 55.00 TL çıkmalı)
 SELECT fn_CezaHesapla(10) AS Hesaplanan_Gecikme_Cezasi;
