@@ -13,13 +13,16 @@
             --body-bg: #f8fafc;
         }
         body { background-color: var(--body-bg); font-family: 'Segoe UI', sans-serif; }
+        
+        /* Sol Sabit Sidebar */
         .sidebar {
             min-width: 260px; max-width: 260px;
             background: linear-gradient(180deg, var(--sidebar-bg) 0%, #0f172a 100%);
             min-height: 100vh; color: #fff; box-shadow: 4px 0 15px rgba(0,0,0,0.05);
         }
         .sidebar-header { padding: 25px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidebar-header h3 { font-size: 1.15rem; font-weight: 700; color: var(--accent-color); }
+        .sidebar-header h3 { font-size: 1.15rem; font-weight: 700; color: var(--accent-color); letter-spacing: 0.5px; }
+        
         .nav-link-custom {
             padding: 14px 25px; display: flex; align-items: center;
             color: rgba(255, 255, 255, 0.7); text-decoration: none; font-weight: 500;
@@ -29,9 +32,13 @@
             color: #fff; background: rgba(255, 255, 255, 0.05); border-left-color: var(--accent-color); padding-left: 30px;
         }
         .nav-link-custom i { margin-right: 15px; font-size: 1.1rem; width: 25px; text-align: center; }
+        
+        /* Sağ İçerik Kart Yapısı */
         .main-content { padding: 40px; width: 100%; }
         .content-card { background: #ffffff; border: none; border-radius: 12px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.02); overflow: hidden; }
         .card-header-custom { background: #fff; border-bottom: 1px solid #f1f5f9; padding: 25px 30px; }
+        
+        /* Rapor Şemasına Uygun Tablo */
         .table-custom { margin-bottom: 0; }
         .table-custom thead th {
             background-color: #f8fafc; color: #64748b; font-weight: 600;
@@ -39,6 +46,7 @@
         }
         .table-custom tbody td { padding: 16px 24px; vertical-align: middle; color: #334155; border-bottom: 1px solid #f1f5f9; }
         .table-custom tbody tr:hover { background-color: #f8fafc; }
+        
         .badge-student { background-color: #e0f2fe; color: #0369a1; font-weight: 600; padding: 6px 12px; border-radius: 6px; font-size: 0.85rem; }
     </style>
 </head>
@@ -50,9 +58,9 @@
         </div>
         <nav class="mt-4 flex-grow-1">
             <a href="#" class="nav-link-custom active"><i class="fa-solid fa-users"></i> Üye Listesi</a>
-            <a href="#" class="nav-link-custom"><i class="fa-solid fa-book"></i> Kitap Stoku</a>
+            <a href="#" class="nav-link-custom"><i class="fa-solid fa-book"></i> Materyal Yönetimi</a>
             <a href="#" class="nav-link-custom"><i class="fa-solid fa-clock-history"></i> Ödünç İşlemleri</a>
-            <a href="#" class="nav-link-custom"><i class="fa-solid fa-triangle-exclamation"></i> Ceza Yönetimi</a>
+            <a href="#" class="nav-link-custom"><i class="fa-solid fa-triangle-exclamation"></i> Ceza & Borç Takibi</a>
         </nav>
         <div class="p-3 text-center border-top border-secondary border-opacity-10">
             <small class="text-muted" style="font-size: 0.75rem;">Kütüphane Otomasyonu v2.0</small>
@@ -66,7 +74,7 @@
                     <i class="fa-solid fa-address-book text-primary me-2"></i> Kütüphane Üye Listesi (Web Arayüzü)
                 </h4>
                 <button class="btn btn-sm btn-primary px-3 py-2" style="border-radius: 6px;">
-                    <i class="fa-solid fa-user-plus me-2"></i> Yeni Üye Ekle
+                    <i class="fa-solid fa-user-plus me-2"></i> Yeni Üye Kaydı
                 </button>
             </div>
             <div class="card-body p-0">
@@ -75,18 +83,24 @@
                         <thead>
                             <tr>
                                 <th>Üye ID</th>
+                                <th>T.C. Kimlik No</th>
                                 <th>Ad</th>
                                 <th>Soyad</th>
+                                <th>E-Posta</th>
                                 <th>Üye Tipi</th>
+                                <th>Kayıt Tarihi</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for uye in uyeler %}
                             <tr>
                                 <td class="fw-bold text-secondary">{{ uye.UyeID or 1 }}</td>
+                                <td class="font-monospace">{{ uye.TC_No or '12345678901' }}</td>
                                 <td class="fw-bold">{{ uye.Ad or 'Remle' }}</td>
                                 <td class="fw-bold">{{ uye.Soyad or 'Temur' }}</td>
+                                <td>{{ uye.Eposta or 'remle@universite.edu.tr' }}</td>
                                 <td><span class="badge badge-student">{{ uye.UyeTipi or 'Öğrenci' }}</span></td>
+                                <td class="text-muted">{{ uye.KayitTarihi or '2026-05-31' }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
