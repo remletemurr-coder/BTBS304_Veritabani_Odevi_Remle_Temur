@@ -112,13 +112,28 @@
             {% elif sayfa == 'uye_cre' or sayfa == 'uye_ekle' %}
             <div class="card-header-custom"><h4 class="mb-0 text-dark fw-bold" style="font-size: 1.25rem;"><i class="fa-solid fa-user-plus text-primary me-2"></i> Yeni Üye Kaydı Formu</h4></div>
             <div class="card-body p-4">
-                <form action="/uye-ekle" method="POST" style="max-width: 500px;">
-                    <div class="mb-3"><label class="form-label fw-bold">T.C. Kimlik No</label><input type="text" class="form-control" placeholder="11 Haneli TC giriniz" required></div>
-                    <div class="mb-3"><label class="form-label fw-bold">Ad</label><input type="text" class="form-control" required></div>
-                    <div class="mb-3"><label class="form-label fw-bold">Soyad</label><input type="text" class="form-control" required></div>
-                    <div class="mb-3"><label class="form-label fw-bold">Üye Tipi</label><select class="form-select"><option>Öğrenci</option><option>Akademisyen</option></select></div>
-                    <button type="submit" class="btn btn-primary">Kaydet</button>
-                </form>
+            <form action="/uye-ekle" method="POST" style="max-width: 500px;">
+    <div class="mb-3">
+        <label class="form-label fw-bold">T.C. Kimlik No</label>
+        <input type="text" name="tc_no" class="form-control" placeholder="11 Haneli TC giriniz" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">Ad</label>
+        <input type="text" name="ad" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">Soyad</label>
+        <input type="text" name="soyad" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label class="form-label fw-bold">Üye Tipi</label>
+        <select name="uye_tipi" class="form-select">
+            <option>Öğrenci</option>
+            <option>Akademisyen</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Kaydet (sp_UyeEkle)</button>
+</form>
             </div>
             {% endif %}
 
