@@ -67,6 +67,8 @@ CREATE TRIGGER tg_Stok_Azalt
 AFTER INSERT ON Odunc 
 FOR EACH ROW 
 UPDATE Materyaller SET StokAdedi = StokAdedi - 1 WHERE MateryalID = NEW.MateryalID;
+
+
 -- ========================================================
 -- 5. CANLI TEST VE SİMÜLASYON İŞLEMLERİ
 -- ========================================================
